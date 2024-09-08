@@ -1,0 +1,205 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat';
+}
+
+body{
+    background-color: #fff;
+    width: 100vw;
+    height: 100vh;
+}
+
+header{
+    width: 100%;
+    height: 10%;
+    -webkit-box-shadow: 0px 10px 17px -4px rgba(70, 68, 68, 0.79);
+    -moz-box-shadow: 0px 10px 17px -4px rgba(70, 68, 68, 0.79);
+    box-shadow: 0px 10px 17px -4px rgba(70, 68, 68, 0.79);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header > button{
+    padding: 2% 5%;
+    color: #111;
+    outline: none;
+    background-color: transparent;
+    border: none;
+    text-transform: uppercase;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+}
+
+main{
+    display: flex;
+    width: 100%;
+    height: 90%;
+    padding: 2%;
+}
+
+.sidebar{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 5%;
+    width: 25%;
+    padding: 5% 2%;
+    background-color: #ebe9e9;
+}
+
+.sidebar-items{
+    height:80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10%;
+}
+
+.sidebar-item-title{
+    font-weight: 600;
+    font-size: 20px;
+    flex: 1;
+}
+
+.sidebar-item-text{
+    font-size: 16px;    
+    margin-left: 2%;
+    flex: 1;
+    transition: 0.3s ease;
+    padding: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 15px;
+    width: 100%;
+}
+
+.sidebar-item-text:hover, .selected{
+    background-color: #868282;
+    cursor: pointer;
+    color: #fff;
+}
+
+.main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2%;
+    width: 75%;
+    gap: 2%;
+}
+
+table, tr, th, td{
+    border: 1px solid #111;
+}
+
+.main-table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td{
+    padding: 0.2vw;
+    font-size: 14px;
+}
+
+td{
+    text-align: center;
+}
+
+td > input{
+    border: none;
+    outline: none;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+.table-buttons{
+    height: 5%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 2%;
+}
+
+.table-btn{
+    height: 100%;
+    padding: 0 5%;
+    border-radius: 15px;
+    outline: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+.add{
+    background-color: green;
+}
+
+.delete{
+    background-color: red;
+}
+
+.start{
+    background-color: blue;
+}
+
+.time-quant{
+    padding: 1% 2%;
+    display: none;
+    gap: 2%;
+    justify-content: center;
+}
+.time-quant > span {
+    font-size: 18px;   
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.time-quant > input {
+    padding: 1% 2%;
+    text-align: left;
+    width: 20%;
+}
+
+.container{
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.cpu-idle{
+    border-collapse: collapse;
+}
+
+.cpu-idle > thead > tr > th,
+.cpu-idle > thead > tr > td{
+    padding: 1vh 1vw;
+}
+
+.cpu-idle-clone{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    background-color: #fff;
+    display: block;
+}
+
+@keyframes animacija{
+    0%{
+        width: 100%;
+    }
+    100%{
+        width: 0%;
+    }
+}

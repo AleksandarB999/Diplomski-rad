@@ -1,0 +1,80 @@
+<!--stilizovati za  mobilni-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diplomski rad</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <button>Vizuelizacija</button>
+    </header>
+    <main>
+      <div class="sidebar">
+        <span class="sidebar-item-title"
+          >Algoritmi za upravljanje vremenom</span
+        >
+        <div class="sidebar-items"></div>
+      </div>
+      <div class="main">
+        <div class="time-quant">
+          <span>Unesite kvant vremena</span>
+          <input type="number" />
+        </div>
+        <span class="main-title">Tabela procesorskih vrednosti</span>
+        <table class="main-table">
+          <thead>
+            <tr>
+              <th>Proces ID</th>
+              <th>Vreme dolaska</th>
+              <th>Vreme izvrsenja</th>
+              <th>Prioritet</th>
+              <th>Vreme odgovora</th>
+              <th>Ukupno vreme obrade</th>
+              <th>Vreme zavrsetka</th>
+              <th>Vreme cekanja</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="table-buttons">
+          <button class="table-btn add">Dodaj proces</button>
+          <button class="table-btn delete">Obrisi proces</button>
+          <button class="table-btn start">Startuj</button>
+        </div>
+        <span class="main-text"
+          >Prosecno vreme zavrsetka: <span class="ct"></span
+        ></span>
+        <span class="main-text"
+          >Prosecno vreme obrade: <span class="tat"></span
+        ></span>
+        <div class="container">
+          <!-- HARDKORIRANE VREDNOSTI, PROMENI KASNIJE -->
+          <table class="cpu-idle">
+            <thead>
+              <tr>
+                <th>CPU u cekanju</th>
+                <th>P1</th>
+                <th>P2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <td>2</td>
+              <td>5</td>
+              <td>5</td>
+            </tbody>
+          </table>
+          <div class="cpu-idle-clone"></div>
+        </div>
+      </div>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
