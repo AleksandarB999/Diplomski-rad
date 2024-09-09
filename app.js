@@ -17,7 +17,7 @@ let procesi = [],
   ukupnoVremeObrade,
   vremeZavrsetka,
   vremeCekanja;
-const brojCelija = 8;
+const brojCelija = 9;
 const algoritmi = [
   "First Come First Serve",
   "Shortest Job Next",
@@ -63,11 +63,14 @@ const dodajProces = () => {
     if (i === 0)
       // ID Procesa
       td.innerHTML = `P${procesi.length}`;
-    else if (i >= 4) {
+    else if (i >= 4 && i < 8) {
       const span = document.createElement("span");
       span.classList.add("tdRacunica");
       span.innerHTML = 0;
       td.appendChild(span);
+    } else if (i === 8) {
+      let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+      td.style.backgroundColor = `#${randomColor}`;
     } else {
       const input = document.createElement("input");
       input.type = "number";
@@ -80,8 +83,8 @@ const dodajProces = () => {
   });
 };
 
-// startovanje izabranog algoritma
-const startAlg = () => {
+// implementacija fcfs algoritma
+const fcfs = () => {
   let tableData = document.querySelectorAll(".tdRacunica");
   const tds = document.querySelectorAll("td");
   let prethodnoVremeIzvrsenja = 0,
@@ -118,6 +121,69 @@ const startAlg = () => {
   CPUClone.style.animationDuration = "5s";
   avgTat.innerHTML = parseFloat(sumaTat / procesi.length);
   avgCt.innerHTML = parseFloat(sumaCt / procesi.length);
+};
+
+// implementacija sjn algoritma
+const sjn = () => {
+  let vremenaIzvrsenja = [];
+  let tableData = document.querySelectorAll(".tdRacunica");
+  const tds = document.querySelectorAll("td");
+  for (let i = 0; i < procesi.length; i++) {
+    let vremeIzvrsenja = parseInt(tds[i * 8 + 2].querySelector("input").value);
+    vremenaIzvrsenja.push({
+      vreme: vremeIzvrsenja,
+      indeks: i,
+    });
+  }
+  vremenaIzvrsenja = vremenaIzvrsenja.sort((a, b) => {
+    return a.vreme - b.vreme;
+  });
+  let prethodnoVremeIzvrsenja = 0,
+    prethodnoVremeOdgovora = 0,
+    prethodnoVremeZavrsetka = 0,
+    vremeDolaska,
+    sumaTat = 0,
+    sumaCt = 0;
+  vremenaIzvrsenja.forEach((e, i) => {
+    vremeDolaska = parseInt(tds[e.indeks * 8 + 1].querySelector("input").value);
+    if (i === 0) {
+      vremeOdgovora = vremeDolaska;
+      vremeZavrsetka = vremeDolaska + e.vreme;
+    } else {
+      vremeOdgovora = prethodnoVremeIzvrsenja + prethodnoVremeOdgovora;
+      vremeZavrsetka = prethodnoVremeZavrsetka + e.vreme;
+    }
+    ukupnoVremeObrade = vremeZavrsetka - vremeDolaska;
+    sumaTat += ukupnoVremeObrade;
+    sumaCt += vremeZavrsetka;
+    vremeCekanja = ukupnoVremeObrade - e.vreme;
+    // azuriranje vrednosti za sledeci proces
+    (prethodnoVremeIzvrsenja = e.vreme),
+      (prethodnoVremeOdgovora = vremeOdgovora),
+      (prethodnoVremeZavrsetka = vremeZavrsetka);
+    tableData[e.indeks * 4].innerHTML = vremeOdgovora;
+    tableData[e.indeks * 4 + 1].innerHTML = ukupnoVremeObrade;
+    tableData[e.indeks * 4 + 2].innerHTML = vremeZavrsetka;
+    tableData[e.indeks * 4 + 3].innerHTML = vremeCekanja;
+    tableData[e.indeks * 4 + 4].style.backgroundColor = "#" + randomColor;
+  });
+
+  CPUClone.style.animation = "animacija";
+  CPUClone.style.animationDuration = "5s";
+  avgTat.innerHTML = parseFloat(sumaTat / procesi.length);
+  avgCt.innerHTML = parseFloat(sumaCt / procesi.length);
+};
+
+// startovanje izabranog algoritma
+const startAlg = () => {
+  switch (izabraniAlgoritam) {
+    case "First Come First Serve":
+      fcfs();
+      break;
+    case "Shortest Job Next":
+      sjn();
+      break;
+  }
 };
 
 // event listener-i
