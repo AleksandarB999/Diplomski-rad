@@ -518,6 +518,7 @@ const obrisiProces = () => {
   // ne sme da obrise headere
   if (trs.length === 1) return;
   trs[trs.length - 1].remove();
+  procesi.pop();
 };
 
 // event listener-i
