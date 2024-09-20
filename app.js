@@ -7,23 +7,27 @@ const avgCt = document.querySelector(".ct");
 const avgTat = document.querySelector(".tat");
 const dodajProcesBtn = document.querySelector(".table-btn.add");
 const startujBtn = document.querySelector(".table-btn.start");
+const obrisiBtn = document.querySelector(".table-btn.delete");
+const modalBtn = document.querySelector(".modal-btn");
+const modal = document.querySelector(".modal-wrapper");
+const modalTitle = document.querySelector(".modal-title");
 
 // promenljive
 
 let procesi = [],
-  izabraniAlgoritam,
+  izabraniAlgoritam = "",
   vremeOdgovora,
   ukupnoVremeObrade,
   vremeZavrsetka,
   vremeCekanja,
-  vremenaIzvrsenja;
+  vremenaIzvrsenja,
+  redIzvrsavanjaProcesa = [];
 const brojCelija = 9;
 const algoritmi = [
   "First Come First Serve",
   "Shortest Job Next",
   "Round Robin",
   "Priority Schedule",
-  "Multilevel Queue Scheduling",
 ];
 
 // funkcije
@@ -161,6 +165,12 @@ const sjn = () => {
       najkraciProces.vremeZavrsetka - najkraciProces.vremeDolaska;
     najkraciProces.vremeOdgovora = najkraciProces.vremeCekanja;
 
+    redIzvrsavanjaProcesa.push({
+      id: najkraciProces.id,
+      executionTime: najkraciProces.vremeIzvrsenja,
+      vremeDolaska: najkraciProces.vremeDolaska,
+    });
+
     // Ažuriranje HTML tabele
     let procesIndex = parseInt(najkraciProces.id.slice(1)); // P0, P1... uzmemo broj
     tableData[procesIndex * 4].innerHTML = najkraciProces.vremeOdgovora;
@@ -187,13 +197,9 @@ const sjn = () => {
 
 const fcfs = () => {
   const tableData = document.querySelectorAll(".tdRacunica");
-  let vremeCekanja = 0,
-    vremeZavrsetka = 0,
-    tat = 0,
-    sumaTat = 0,
+  let sumaTat = 0,
     sumaCt = 0;
   procesi.forEach((proces, i) => {
-    console.log(proces);
     // vreme čekanja
     if (i === 0) {
       // Prvi proces nema čekanja, stiže odmah
@@ -215,7 +221,11 @@ const fcfs = () => {
 
     // Vreme odgovora = vreme čekanja (isto kao vreme čekanja za FCFS)
     proces.vremeOdgovora = proces.vremeCekanja;
-
+    redIzvrsavanjaProcesa.push({
+      id: proces.id,
+      executionTime: proces.vremeIzvrsenja,
+      vremeDolaska: proces.vremeDolaska,
+    });
     // Ažuriraj rezultate u tabeli
     tableData[parseInt(proces.id[1]) * 4].innerHTML = proces.vremeOdgovora;
     tableData[parseInt(proces.id[1]) * 4 + 1].innerHTML = proces.tat;
@@ -236,95 +246,10 @@ const fcfs = () => {
   CPUClone.style.animationDuration = "5s";
 };
 
-const roundRobinScheduling = () => {
-  const tableData = document.querySelectorAll(".tdRacunica");
-  const timeQuantum = parseInt(document.querySelector(".rr-quant").value);
-
-  let trenutnoVreme = 0;
-  let queue = [];
-  let zavrseniProcesi = 0;
-  let procesiCopy = JSON.parse(JSON.stringify(procesi)); // Kopiramo procese
-  let sumaTat = 0,
-    sumaCt = 0;
-
-  procesiCopy.sort((a, b) => a.vremeDolaska - b.vremeDolaska);
-  let i = 0;
-
-  // Dodajemo procese koji dolaze u red na početku
-  while (
-    i < procesiCopy.length &&
-    procesiCopy[i].vremeDolaska <= trenutnoVreme
-  ) {
-    queue.push(procesiCopy[i]);
-    i++;
-  }
-
-  while (zavrseniProcesi < procesiCopy.length) {
-    if (queue.length === 0) {
-      trenutnoVreme = procesiCopy[i].vremeDolaska;
-      queue.push(procesiCopy[i]);
-      i++;
-    }
-
-    let proces = queue.shift();
-
-    if (proces.preostaloVreme === undefined) {
-      proces.preostaloVreme = proces.vremeIzvrsenja; // Postavljamo preostalo vreme
-    }
-
-    // Računamo vreme odgovora samo kada proces prvi put uđe u CPU
-    if (proces.vremeOdgovora === undefined) {
-      proces.vremeOdgovora = trenutnoVreme - proces.vremeDolaska;
-    }
-
-    let executionTime = Math.min(timeQuantum, proces.preostaloVreme);
-    trenutnoVreme += executionTime;
-    proces.preostaloVreme -= executionTime;
-
-    // Dodajemo nove procese u red koji dolaze tokom trenutnog vremenskog kvanta
-    while (
-      i < procesiCopy.length &&
-      procesiCopy[i].vremeDolaska <= trenutnoVreme
-    ) {
-      queue.push(procesiCopy[i]);
-      i++;
-    }
-
-    if (proces.preostaloVreme === 0) {
-      proces.vremeZavrsetka = trenutnoVreme;
-      proces.tat = proces.vremeZavrsetka - proces.vremeDolaska;
-      proces.vremeCekanja = proces.tat - proces.vremeIzvrsenja;
-
-      zavrseniProcesi++;
-
-      // Ažuriranje HTML tabele
-      let procesIndex = parseInt(proces.id.slice(1));
-      tableData[procesIndex * 4].innerHTML = proces.vremeOdgovora;
-      tableData[procesIndex * 4 + 1].innerHTML = proces.tat;
-      tableData[procesIndex * 4 + 2].innerHTML = proces.vremeZavrsetka;
-      tableData[procesIndex * 4 + 3].innerHTML = proces.vremeCekanja;
-
-      sumaTat += proces.tat;
-      sumaCt += proces.vremeZavrsetka;
-    } else {
-      queue.push(proces); // Ako proces nije završen, vraćamo ga u red
-    }
-  }
-
-  // Prikaz prosečnih vrednosti
-  avgTat.innerHTML = (sumaTat / procesi.length).toFixed(2);
-  avgCt.innerHTML = (sumaCt / procesi.length).toFixed(2);
-
-  // Animacija CPU-a
-  CPUClone.style.animation = "animacija";
-  CPUClone.style.animationDuration = "5s";
-};
-
 const priorityScheduling = () => {
   const tableData = document.querySelectorAll(".tdRacunica");
 
-  let vremeZavrsetka = 0,
-    sumaTat = 0,
+  let sumaTat = 0,
     sumaCt = 0;
 
   // Kopiramo procese i sortiramo ih prema prioritetu (manji broj = veći prioritet)
@@ -336,7 +261,6 @@ const priorityScheduling = () => {
 
     return a.prioritet - b.prioritet;
   });
-  console.log(preostaliProcesi);
 
   let trenutnoVreme = 0;
   let zavrseniProcesi = [];
@@ -361,6 +285,12 @@ const priorityScheduling = () => {
     sledeciProces.vremeCekanja =
       sledeciProces.tat - sledeciProces.vremeIzvrsenja;
     sledeciProces.vremeOdgovora = trenutnoVreme - sledeciProces.vremeDolaska;
+
+    redIzvrsavanjaProcesa.push({
+      id: sledeciProces.id,
+      vremeDolaska: sledeciProces.vremeDolaska,
+      executionTime: sledeciProces.vremeIzvrsenja,
+    });
 
     // Ažuriramo trenutno vreme
     trenutnoVreme = sledeciProces.vremeZavrsetka;
@@ -390,75 +320,76 @@ const priorityScheduling = () => {
   CPUClone.style.animationDuration = "5s";
 };
 
-const multilevelScheduling = () => {
+const roundRobinScheduling = () => {
   const tableData = document.querySelectorAll(".tdRacunica");
   const timeQuantum = parseInt(document.querySelector(".rr-quant").value);
 
-  let vremeZavrsetka = 0,
-    sumaTat = 0,
+  let trenutnoVreme = 0; // Trenutno vreme u simulaciji
+  let queue = []; // Red za procese
+  let zavrseniProcesi = 0;
+  let procesiCopy = JSON.parse(JSON.stringify(procesi)); // Duboka kopija procesa
+  let sumaTat = 0,
     sumaCt = 0;
 
-  // Podela procesa u visoko i nisko prioritetne redove
-  let highPriorityQueue = procesi.filter((p) => p.prioritet <= 3); // Visok prioritet (FCFS)
-  let lowPriorityQueue = procesi.filter((p) => p.prioritet > 3); // Nizak prioritet (Round Robin)
-
-  let trenutnoVreme = 0;
-  let zavrseniProcesi = [];
-
-  // FCFS za visoko prioritetne procese
-  highPriorityQueue.sort((a, b) => a.vremeDolaska - b.vremeDolaska);
-
-  highPriorityQueue.forEach((proces) => {
-    if (trenutnoVreme < proces.vremeDolaska) {
-      trenutnoVreme = proces.vremeDolaska;
-    }
-    proces.vremeZavrsetka = trenutnoVreme + proces.vremeIzvrsenja;
-    proces.tat = proces.vremeZavrsetka - proces.vremeDolaska;
-    proces.vremeCekanja = proces.tat - proces.vremeIzvrsenja;
-    proces.vremeOdgovora = trenutnoVreme - proces.vremeDolaska;
-    trenutnoVreme = proces.vremeZavrsetka;
-
-    zavrseniProcesi.push(proces);
-
-    // Ažuriranje HTML tabele
-    let procesIndex = parseInt(proces.id.slice(1));
-    tableData[procesIndex * 4].innerHTML = proces.vremeOdgovora;
-    tableData[procesIndex * 4 + 1].innerHTML = proces.tat;
-    tableData[procesIndex * 4 + 2].innerHTML = proces.vremeZavrsetka;
-    tableData[procesIndex * 4 + 3].innerHTML = proces.vremeCekanja;
-
-    sumaTat += proces.tat;
-    sumaCt += proces.vremeZavrsetka;
+  // Inicijalizujemo sve procese
+  procesiCopy.forEach((proces) => {
+    proces.preostaloVreme = proces.vremeIzvrsenja;
+    proces.vremeOdgovora = -1; // -1 znači da još nije procesiran
   });
 
-  // Round Robin za nisko prioritetne procese
-  let queue = [...lowPriorityQueue];
-  while (queue.length > 0) {
+  // Sortiramo procese po vremenu dolaska
+  procesiCopy.sort((a, b) => a.vremeDolaska - b.vremeDolaska);
+  let i = 0;
+
+  // Prvo, dodamo sve procese koji su stigli do trenutnog vremena u red
+  while (
+    i < procesiCopy.length &&
+    procesiCopy[i].vremeDolaska <= trenutnoVreme
+  ) {
+    queue.push(procesiCopy[i]);
+    i++;
+  }
+
+  // Glavna petlja za Round Robin
+  while (zavrseniProcesi < procesiCopy.length) {
+    if (queue.length === 0) {
+      trenutnoVreme = procesiCopy[i].vremeDolaska;
+      queue.push(procesiCopy[i]);
+      i++;
+    }
     let proces = queue.shift();
 
-    if (trenutnoVreme < proces.vremeDolaska) {
-      trenutnoVreme = proces.vremeDolaska;
+    // Postavljamo vreme odgovora prvi put kada proces uđe u CPU
+    if (proces.vremeOdgovora === -1) {
+      proces.vremeOdgovora = trenutnoVreme - proces.vremeDolaska;
     }
 
-    if (proces.preostaloVreme === undefined) {
-      proces.preostaloVreme = proces.vremeIzvrsenja;
-    }
-
+    // Dodeljujemo CPU na kvant ili preostalo vreme procesa
     let executionTime = Math.min(timeQuantum, proces.preostaloVreme);
-    proces.preostaloVreme -= executionTime;
     trenutnoVreme += executionTime;
+    proces.preostaloVreme -= executionTime;
+    redIzvrsavanjaProcesa.push({
+      id: proces.id,
+      executionTime,
+      vremeDolaska: proces.vremeDolaska,
+    });
+    // Dodajemo nove procese u red koji su stigli tokom trenutnog vremena
+    while (
+      i < procesiCopy.length &&
+      procesiCopy[i].vremeDolaska <= trenutnoVreme
+    ) {
+      queue.push(procesiCopy[i]);
+      i++;
+    }
 
+    // Ako je proces završen
     if (proces.preostaloVreme === 0) {
       proces.vremeZavrsetka = trenutnoVreme;
       proces.tat = proces.vremeZavrsetka - proces.vremeDolaska;
       proces.vremeCekanja = proces.tat - proces.vremeIzvrsenja;
-      proces.vremeOdgovora =
-        proces.vremeOdgovora !== undefined
-          ? proces.vremeOdgovora
-          : trenutnoVreme - proces.vremeDolaska - proces.vremeIzvrsenja;
-      zavrseniProcesi.push(proces);
+      zavrseniProcesi++;
 
-      // Ažuriranje HTML tabele
+      // Ažuriramo HTML tabelu sa izračunatim vrednostima
       let procesIndex = parseInt(proces.id.slice(1));
       tableData[procesIndex * 4].innerHTML = proces.vremeOdgovora;
       tableData[procesIndex * 4 + 1].innerHTML = proces.tat;
@@ -468,7 +399,8 @@ const multilevelScheduling = () => {
       sumaTat += proces.tat;
       sumaCt += proces.vremeZavrsetka;
     } else {
-      queue.push(proces); // Ako proces nije završio, vratimo ga u red
+      // Ako proces nije završen, vraćamo ga u red
+      queue.push(proces);
     }
   }
 
@@ -482,10 +414,8 @@ const multilevelScheduling = () => {
 };
 
 // tabela za cpu idle i vreme rada svakog procesa
-// za sad samo za fcfs !!!
 const napraviDruguTabelu = () => {
   const container = document.querySelector(".container");
-  const tds = document.querySelectorAll("td");
   const tableCpu = document.createElement("table");
   tableCpu.classList.add("cpu-idle");
   container.appendChild(tableCpu);
@@ -497,14 +427,16 @@ const napraviDruguTabelu = () => {
   let th = document.createElement("th");
   th.innerHTML = "CPU u cekanju";
   tr.appendChild(th);
-  procesi.forEach((_, i) => {
+  redIzvrsavanjaProcesa.forEach((p) => {
     th = document.createElement("th");
-    th.innerHTML = `P${i}`;
-    th.style.backgroundColor = tds[i * brojCelija + 8].style.backgroundColor;
+    th.innerHTML = p.id;
+    th.style.backgroundColor = procesi.find(
+      (proces) => proces.id === p.id
+    ).boja;
     tr.appendChild(th);
   });
 
-  let vremeDolaska = parseInt(tds[1].querySelector("input").value);
+  let vremeDolaska = redIzvrsavanjaProcesa[0].vremeDolaska;
   let tbody = document.createElement("tbody");
   tableCpu.appendChild(tbody);
   tr = document.createElement("tr");
@@ -512,13 +444,9 @@ const napraviDruguTabelu = () => {
   td = document.createElement("td");
   td.innerHTML = vremeDolaska;
   tr.appendChild(td);
-  let vremeIzvrsenja, boja;
-  for (let i = 0; i < procesi.length; i++) {
-    vremeIzvrsenja = parseInt(
-      tds[i * brojCelija + 2].querySelector("input").value
-    );
+  for (let i = 0; i < redIzvrsavanjaProcesa.length; i++) {
     td = document.createElement("td");
-    td.innerHTML = vremeIzvrsenja;
+    td.innerHTML = redIzvrsavanjaProcesa[i].executionTime;
     tr.appendChild(td);
   }
 };
@@ -530,7 +458,6 @@ const kreirajProcese = () => {
   let noviProces;
   procesi = [];
   for (let i = 0; i < brojProcesa; i++) {
-    console.log(i);
     noviProces = {
       id: `P${i}`,
       vremeDolaska: parseInt(
@@ -544,6 +471,7 @@ const kreirajProcese = () => {
       vremeOdgovora: 0,
       tat: 0,
       prioritet: tds[i * brojCelija + 3].querySelector("input").value,
+      boja: tds[i * brojCelija + 8].style.backgroundColor,
     };
     procesi.push(noviProces);
   }
@@ -551,6 +479,18 @@ const kreirajProcese = () => {
 
 // startovanje izabranog algoritma
 const startAlg = () => {
+  if (izabraniAlgoritam === "") {
+    const message = "Izaberite algoritam!";
+    modal.style.display = "flex";
+    modalTitle.innerHTML = message;
+    return;
+  }
+  if (procesi.length < 1) {
+    const message = "Unesite minimum jedan proces!";
+    modal.style.display = "flex";
+    modalTitle.innerHTML = message;
+    return;
+  }
   kreirajProcese();
   switch (izabraniAlgoritam) {
     case "First Come First Serve":
@@ -566,11 +506,18 @@ const startAlg = () => {
     case "Priority Schedule":
       priorityScheduling();
       break;
-    case "Multilevel Queue Scheduling":
-      multilevelScheduling();
-      break;
   }
   napraviDruguTabelu();
+};
+
+const cancelModal = () => (modal.style.display = "none");
+
+// brisanje zadnjeg procesa
+const obrisiProces = () => {
+  const trs = document.querySelectorAll("tr");
+  // ne sme da obrise headere
+  if (trs.length === 1) return;
+  trs[trs.length - 1].remove();
 };
 
 // event listener-i
@@ -578,4 +525,6 @@ CPUClone.addEventListener("animationend", () => {
   CPUClone.style.display = "none";
 });
 dodajProcesBtn.addEventListener("click", dodajProces);
+obrisiBtn.addEventListener("click", obrisiProces);
 startujBtn.addEventListener("click", startAlg);
+modalBtn.addEventListener("click", cancelModal);
