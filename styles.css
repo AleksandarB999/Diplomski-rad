@@ -323,6 +323,11 @@ td > input{
     aspect-ratio: 1/1;
   }
 
+  .animation{
+    animation: animacija;
+    animation-duration: 5s;
+  }
+
 @keyframes animacija{
     0%{
         width: 100%;
@@ -358,6 +363,7 @@ td > input{
         align-items: center;
         gap: 0;
         z-index: 20;
+        overflow-y: hidden;
     }
 
     .sidebar-items{

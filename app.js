@@ -16,6 +16,7 @@ const hamburgerBtn = document.querySelector(".hamburger-btn");
 const sidebar = document.querySelector(".sidebar");
 const homeBtn = document.querySelector(".home-btn");
 const container = document.querySelector(".hero");
+const mainTable = document.querySelector(".main-table");
 
 // promenljive
 
@@ -98,6 +99,11 @@ addEventListener("load", checkIsLandscape);
 
 checkIcon();
 
+const checkNegative = (e) => {
+  if (e.currentTarget.value < 0) e.currentTarget.value = 0;
+  console.log(e.currentTarget);
+};
+
 // dodavanje procesa u tabeli procesa
 const dodajProces = () => {
   const tbody = document.querySelector("tbody");
@@ -120,6 +126,7 @@ const dodajProces = () => {
     } else {
       const input = document.createElement("input");
       input.type = "number";
+      input.addEventListener("change", checkNegative);
       td.appendChild(input);
     }
     tr.appendChild(td);
@@ -233,8 +240,7 @@ const sjn = () => {
   avgCt.innerHTML = (sumaCt / procesi.length).toFixed(2);
 
   // Animacija CPU-a
-  CPUClone.style.animation = "animacija";
-  CPUClone.style.animationDuration = "5s";
+  CPUClone.classList.add("animation");
 };
 
 const fcfs = () => {
@@ -284,8 +290,7 @@ const fcfs = () => {
   avgCt.innerHTML = (sumaCt / procesi.length).toFixed(2);
 
   // Animacija CPU-a
-  CPUClone.style.animation = "animacija";
-  CPUClone.style.animationDuration = "5s";
+  CPUClone.classList.add("animation");
 };
 
 const priorityScheduling = () => {
@@ -358,8 +363,7 @@ const priorityScheduling = () => {
   avgCt.innerHTML = (sumaCt / procesi.length).toFixed(2);
 
   // Animacija CPU-a
-  CPUClone.style.animation = "animacija";
-  CPUClone.style.animationDuration = "5s";
+  CPUClone.classList.add("animation");
 };
 
 const roundRobinScheduling = () => {
@@ -451,8 +455,7 @@ const roundRobinScheduling = () => {
   avgCt.innerHTML = (sumaCt / procesi.length).toFixed(2);
 
   // Animacija CPU-a
-  CPUClone.style.animation = "animacija";
-  CPUClone.style.animationDuration = "5s";
+  CPUClone.classList.add("animation");
 };
 
 // tabela za cpu idle i vreme rada svakog procesa
@@ -494,8 +497,9 @@ const napraviDruguTabelu = () => {
 };
 
 const kreirajProcese = () => {
-  const rows = document.querySelectorAll("tr");
-  const tds = document.querySelectorAll("td");
+  const rows = mainTable.querySelectorAll("tr");
+  const tds = mainTable.querySelectorAll("td");
+  console.log(tds);
   const brojProcesa = rows.length - 1; // prvi red header se oduzima
   let noviProces;
   procesi = [];
@@ -519,8 +523,24 @@ const kreirajProcese = () => {
   }
 };
 
+const clearInner = (node) => {
+  while (node.hasChildNodes()) {
+    clear(node.firstChild);
+  }
+};
+
+const clear = (node) => {
+  while (node.hasChildNodes()) {
+    clear(node.firstChild);
+  }
+  node.parentNode.removeChild(node);
+};
+
 // startovanje izabranog algoritma
 const startAlg = () => {
+  CPUClone.style.display = "block";
+  redIzvrsavanjaProcesa = [];
+  const otherTable = document.querySelector(".cpu-idle");
   if (izabraniAlgoritam === "") {
     const message = "Izaberite algoritam!";
     modal.style.display = "flex";
@@ -549,6 +569,10 @@ const startAlg = () => {
       priorityScheduling();
       break;
   }
+  if (otherTable) {
+    otherTable.innerHTML = "";
+    otherTable.remove();
+  }
   napraviDruguTabelu();
 };
 
@@ -576,6 +600,7 @@ const goHome = () => {
 // event listener-i
 CPUClone.addEventListener("animationend", () => {
   CPUClone.style.display = "none";
+  CPUClone.classList.remove("animation");
 });
 dodajProcesBtn.addEventListener("click", dodajProces);
 obrisiBtn.addEventListener("click", obrisiProces);
