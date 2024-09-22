@@ -14,6 +14,8 @@ const modalTitle = document.querySelector(".modal-title");
 const selectedAlgorithm = document.querySelector(".selected-algorithm");
 const hamburgerBtn = document.querySelector(".hamburger-btn");
 const sidebar = document.querySelector(".sidebar");
+const homeBtn = document.querySelector(".home-btn");
+const container = document.querySelector(".hero");
 
 // promenljive
 
@@ -49,6 +51,7 @@ const checkClicked = (e) => {
     selectedAlgorithm.innerHTML = izabraniAlgoritam;
     if (izabrani) izabrani.classList.remove("selected");
     e.currentTarget.classList.add("selected");
+    openMenu();
   }
 };
 
@@ -79,6 +82,8 @@ const checkIcon = () => {
   }
   img.classList.add("icon-btn");
   hamburgerBtn.appendChild(img);
+  if (izabraniAlgoritam === "") container.style.display = "flex";
+  else container.style.display = "none";
 };
 
 const checkIsLandscape = () => {
@@ -558,6 +563,14 @@ const obrisiProces = () => {
   procesi.pop();
 };
 
+const goHome = () => {
+  izabraniAlgoritam = "";
+  container.style.display = "flex";
+  const izabrani = document.querySelector(".sidebar-item-text.selected");
+  selectedAlgorithm.innerHTML = izabraniAlgoritam;
+  if (izabrani) izabrani.classList.remove("selected");
+};
+
 // event listener-i
 CPUClone.addEventListener("animationend", () => {
   CPUClone.style.display = "none";
@@ -567,3 +580,4 @@ obrisiBtn.addEventListener("click", obrisiProces);
 startujBtn.addEventListener("click", startAlg);
 modalBtn.addEventListener("click", cancelModal);
 hamburgerBtn.addEventListener("click", openMenu);
+homeBtn.addEventListener("click", goHome);
