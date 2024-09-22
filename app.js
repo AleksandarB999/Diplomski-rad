@@ -569,6 +569,8 @@ const goHome = () => {
   const izabrani = document.querySelector(".sidebar-item-text.selected");
   selectedAlgorithm.innerHTML = izabraniAlgoritam;
   if (izabrani) izabrani.classList.remove("selected");
+  menuOpen = false;
+  checkIcon();
 };
 
 // event listener-i
