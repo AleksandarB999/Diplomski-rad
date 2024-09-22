@@ -20,6 +20,7 @@ header{
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #fff;
 }
 
 header > button{
@@ -39,6 +40,21 @@ main{
     width: 100%;
     height: 90%;
     padding: 2%;
+}
+
+.hamburger-btn{
+    width: 5%;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+
+.icon-btn{
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
 }
 
 .sidebar{
@@ -249,18 +265,24 @@ td > input{
     }
 }
 
-@media (max-width: 890px){
+@media (max-width: 900px){
 
     main{
         padding: 0;
+        position: relative;
     }
 
     .sidebar{
         width: 100%;
         position: absolute;
-        left: 0;
+        left: -100%;
         height: 100%;
         align-items: center;
+        gap: 0;
+    }
+
+    .sidebar-items{
+        gap: 5%;
     }
 
     .sidebar-item-title{
@@ -272,6 +294,10 @@ td > input{
 
     .sidebar-item-text{
         justify-content: center;
+        height: 20%;
+        flex: unset;
+        padding: 1%;
+        margin-left: 0;
     }
 
     .main{

@@ -11,6 +11,9 @@ const obrisiBtn = document.querySelector(".table-btn.delete");
 const modalBtn = document.querySelector(".modal-btn");
 const modal = document.querySelector(".modal-wrapper");
 const modalTitle = document.querySelector(".modal-title");
+const selectedAlgorithm = document.querySelector(".selected-algorithm");
+const hamburgerBtn = document.querySelector(".hamburger-btn");
+const sidebar = document.querySelector(".sidebar");
 
 // promenljive
 
@@ -21,7 +24,8 @@ let procesi = [],
   vremeZavrsetka,
   vremeCekanja,
   vremenaIzvrsenja,
-  redIzvrsavanjaProcesa = [];
+  redIzvrsavanjaProcesa = [],
+  menuOpen = false;
 const brojCelija = 9;
 const algoritmi = [
   "First Come First Serve",
@@ -42,6 +46,7 @@ const checkClicked = (e) => {
     else timeKvant.style.display = "none";
     izabraniAlgoritam = e.currentTarget.innerHTML;
     const izabrani = document.querySelector(".sidebar-item-text.selected");
+    selectedAlgorithm.innerHTML = izabraniAlgoritam;
     if (izabrani) izabrani.classList.remove("selected");
     e.currentTarget.classList.add("selected");
   }
@@ -55,6 +60,28 @@ algoritmi.forEach((algoritam) => {
   sidebarItemText.innerHTML = algoritam;
   sidebarItem.appendChild(sidebarItemText);
 });
+
+const openMenu = () => {
+  menuOpen = !menuOpen;
+  checkIcon();
+};
+
+const checkIcon = () => {
+  let img = document.createElement("img");
+  if (hamburgerBtn.hasChildNodes())
+    hamburgerBtn.removeChild(hamburgerBtn.lastChild);
+  if (menuOpen) {
+    img.src = "/cancel-icon.png";
+    sidebar.style.left = "0";
+  } else {
+    img.src = "/hamburger-icon.png";
+    sidebar.style.left = "-100%";
+  }
+  img.classList.add("icon-btn");
+  hamburgerBtn.appendChild(img);
+};
+
+checkIcon();
 
 // dodavanje procesa u tabeli procesa
 const dodajProces = () => {
@@ -529,3 +556,4 @@ dodajProcesBtn.addEventListener("click", dodajProces);
 obrisiBtn.addEventListener("click", obrisiProces);
 startujBtn.addEventListener("click", startAlg);
 modalBtn.addEventListener("click", cancelModal);
+hamburgerBtn.addEventListener("click", openMenu);
