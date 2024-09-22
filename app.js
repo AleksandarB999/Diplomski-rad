@@ -81,6 +81,16 @@ const checkIcon = () => {
   hamburgerBtn.appendChild(img);
 };
 
+const checkIsLandscape = () => {
+  const isLandscape = innerWidth > innerHeight;
+  if (isLandscape) hamburgerBtn.classList.add("not-visible");
+  else hamburgerBtn.classList.remove("not-visible");
+};
+
+addEventListener("resize", checkIsLandscape);
+
+addEventListener("load", checkIsLandscape);
+
 checkIcon();
 
 // dodavanje procesa u tabeli procesa
