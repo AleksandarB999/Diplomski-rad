@@ -24,6 +24,7 @@ header{
 }
 
 header > button{
+    cursor: pointer;
     padding: 2% 5%;
     color: #111;
     outline: none;
