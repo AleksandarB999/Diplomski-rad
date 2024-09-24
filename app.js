@@ -75,10 +75,10 @@ const checkIcon = () => {
   if (hamburgerBtn.hasChildNodes())
     hamburgerBtn.removeChild(hamburgerBtn.lastChild);
   if (menuOpen) {
-    img.src = "/cancel-icon.png";
+    img.src = "/slike/cancel-icon.png";
     sidebar.style.left = "0";
   } else {
-    img.src = "/hamburger-icon.png";
+    img.src = "/slike/hamburger-icon.png";
     sidebar.style.left = "-100%";
   }
   img.classList.add("icon-btn");
