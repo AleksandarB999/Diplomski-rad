@@ -143,9 +143,7 @@ const sortirajFcfs = () => {
 const sortirajSjn = () => {
   let noviProcesi = [];
   let najmanjeVremeDolaska = 9999,
-    indeksNajmanjeVremeDolaska,
-    sumaAtBt = 0,
-    trenutniProces;
+    indeksNajmanjeVremeDolaska;
   procesi.forEach((proces, i) => {
     if (proces.vremeIzvrsenja < najmanjeVremeDolaska) {
       najmanjeVremeDolaska = proces.vremeDolaska;
